@@ -21,6 +21,7 @@
 #import "GLUtils.h"
 #import "BasicDrawable.h"
 #import "BasicDrawableInstance.h"
+#import "ParticleSystemDrawable.h"
 #import "GlobeScene.h"
 #import "UIImage+Stuff.h"
 #import "SceneRendererES.h"
@@ -38,6 +39,7 @@ void BasicDrawable::basicDrawableInit()
     
     isSetupGL = false;
     on = true;
+    hasOverrideColor = false;
     startEnable = 0.0;
     endEnable = 0.0;
     programId = EmptyIdentity;
@@ -319,6 +321,18 @@ void BasicDrawable::setColor(unsigned char inColor[])
 {
     color.r = inColor[0];  color.g = inColor[1];  color.b = inColor[2];  color.a = inColor[3];
     vertexAttributes[colorEntry]->setDefaultColor(color);
+}
+    
+void BasicDrawable::setOverrideColor(RGBAColor inColor)
+{
+    color = inColor;
+    hasOverrideColor = true;
+}
+
+void BasicDrawable::setOverrideColor(unsigned char inColor[])
+{
+    color.r = inColor[0];  color.g = inColor[1];  color.b = inColor[2];  color.a = inColor[3];
+    hasOverrideColor = true;
 }
 
 RGBAColor BasicDrawable::getColor() const
@@ -1237,6 +1251,7 @@ void BasicDrawable::drawOGL2(WhirlyKitRendererFrameInfo *frameInfo,Scene *scene)
     {
         GLuint glTexID = ii < glTexIDs.size() ? glTexIDs[ii] : 0;
         auto baseMapNameID = baseMapNameIDs[ii];
+        auto hasBaseMapNameID = hasBaseMapNameIDs[ii];
         auto texScaleNameID = texScaleNameIDs[ii];
         auto texOffsetNameID = texOffsetNameIDs[ii];
         const OpenGLESUniform *texUni = prog->findUniform(baseMapNameID);
@@ -1248,6 +1263,7 @@ void BasicDrawable::drawOGL2(WhirlyKitRendererFrameInfo *frameInfo,Scene *scene)
             glBindTexture(GL_TEXTURE_2D, glTexID);
             CheckGLError("BasicDrawable::drawVBO2() glBindTexture");
             prog->setUniform(baseMapNameID, (int)ii+progTexBound);
+            prog->setUniform(hasBaseMapNameID, 1);
             float texScale = 1.0;
             Vector2f texOffset(0.0,0.0);
             // Adjust for border pixels
@@ -1264,6 +1280,8 @@ void BasicDrawable::drawOGL2(WhirlyKitRendererFrameInfo *frameInfo,Scene *scene)
             prog->setUniform(texScaleNameID, Vector2f(texScale, texScale));
             prog->setUniform(texOffsetNameID, texOffset);
             CheckGLError("BasicDrawable::drawVBO2() glUniform1i");
+        } else {
+            prog->setUniform(hasBaseMapNameID, 0);
         }
     }
     
@@ -1324,6 +1342,14 @@ void BasicDrawable::drawOGL2(WhirlyKitRendererFrameInfo *frameInfo,Scene *scene)
             CheckGLError("BasicDrawable::drawVBO2() glSetDefault");
         }
     }
+
+    // Color has been overriden, so don't use the embedded ones
+    if (hasOverrideColor) {
+        const OpenGLESAttribute *colorAttr = prog->findAttribute(a_colorNameID);
+        if (colorAttr)
+            glVertexAttrib4f(colorAttr->index, color.r / 255.0, color.g / 255.0, color.b / 255.0, color.a / 255.0);
+    }
+
         
     // If we're using a vertex array object, bind it and draw
     if (vertArrayObj)
@@ -1465,7 +1491,7 @@ void ColorChangeRequest::execute2(Scene *scene,WhirlyKitSceneRendererES *rendere
     BasicDrawableRef basicDrawable = std::dynamic_pointer_cast<BasicDrawable>(draw);
     if (basicDrawable)
     {
-        basicDrawable->setColor(color);
+        basicDrawable->setOverrideColor(color);
     } else {
         BasicDrawableInstanceRef basicDrawInst = std::dynamic_pointer_cast<BasicDrawableInstance>(draw);
         if (basicDrawInst)
@@ -1636,6 +1662,28 @@ void DrawUniformsChangeRequest::execute2(Scene *scene,WhirlyKitSceneRendererES *
         BasicDrawableInstanceRef basicDrawInst = std::dynamic_pointer_cast<BasicDrawableInstance>(draw);
         if (basicDrawInst)
             basicDrawInst->setUniforms(attrs);
+    }
+}
+
+RenderTargetChangeRequest::RenderTargetChangeRequest(SimpleIdentity drawID,SimpleIdentity targetID)
+: WhirlyKit::DrawableChangeRequest(drawID), targetID(targetID)
+{
+}
+    
+void RenderTargetChangeRequest::execute2(Scene *scene,WhirlyKitSceneRendererES *renderer,DrawableRef draw)
+{
+    BasicDrawableRef basicDrawable = std::dynamic_pointer_cast<BasicDrawable>(draw);
+    if (basicDrawable)
+        basicDrawable->setRenderTarget(targetID);
+    else {
+        BasicDrawableInstanceRef basicDrawInst = std::dynamic_pointer_cast<BasicDrawableInstance>(draw);
+        if (basicDrawInst)
+            basicDrawInst->setRenderTarget(targetID);
+        else {
+            ParticleSystemDrawableRef partDrawable = std::dynamic_pointer_cast<ParticleSystemDrawable>(draw);
+            if (partDrawable)
+                partDrawable->setRenderTarget(targetID);
+        }
     }
 }
 

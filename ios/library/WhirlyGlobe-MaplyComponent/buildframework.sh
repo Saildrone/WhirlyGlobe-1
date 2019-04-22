@@ -10,7 +10,7 @@ BUILT_PRODUCTS_SIMULATOR=`xcodebuild -target WhirlyGlobeMaplyComponent -scheme W
 BUILT_PRODUCTS_IPHONEOS=`xcodebuild -target WhirlyGlobeMaplyComponent -scheme WhirlyGlobeMaplyComponent -configuration Release -sdk iphoneos -showBuildSettings OTHER_CFLAGS='-fembed-bitcode' | grep -m 1 "BUILT_PRODUCTS_DIR" | grep -oEi "\/.*"`
 
 xcodebuild -target WhirlyGlobeMaplyComponent -scheme WhirlyGlobeMaplyComponent -configuration Release -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPad Air' OTHER_CFLAGS='-fembed-bitcode' clean build
-xcodebuild -target WhirlyGlobeMaplyComponent -scheme WhirlyGlobeMaplyComponent -configuration Release -sdk iphoneos -DONLY_ACTIVE_ARCH=NO OTHER_CFLAGS='-fembed-bitcode' clean build
+xcodebuild -target WhirlyGlobeMaplyComponent -scheme WhirlyGlobeMaplyComponent -configuration Release -sdk iphoneos -DONLY_ACTIVE_ARCH=NO OTHER_CFLAGS='-fembed-bitcode'
 
 # name and build location
 PROJECT_NAME=WhirlyGlobeMaplyComponent
@@ -54,6 +54,7 @@ lipo -create $BUILT_PRODUCTS_IPHONEOS/WhirlyGlobeMaplyComponent.framework/Whirly
 
 echo "Framework: Copying assets into current version..."
 cp include/*.h $FRAMEWORK_DIR/Headers/
+cp include/vector_tiles/*.h $FRAMEWORK_DIR/Headers/
 
 #replace placeholder in plist with project name
 cp framework_info.plist $FRAMEWORK_DIR/Resources/Info.plist
