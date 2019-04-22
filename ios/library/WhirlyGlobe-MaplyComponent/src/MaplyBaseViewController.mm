@@ -40,6 +40,7 @@ using namespace WhirlyKit;
 @property (nonatomic) UIImage *image;
 @property (nonatomic) NSData *data;
 @property (nonatomic) SimpleIdentity renderTargetID;
+@property (nonatomic) bool fetchCenterPixel;
 @end
 
 @implementation SnapshotTarget
@@ -51,6 +52,7 @@ using namespace WhirlyKit;
     _image = nil;
     _data = nil;
     _renderTargetID = EmptyIdentity;
+    _fetchCenterPixel = false;
     
     return self;
 }
@@ -61,6 +63,14 @@ using namespace WhirlyKit;
 
 - (void)snapshotImage:(UIImage *)snapshotImage {
     _image = snapshotImage;
+}
+
+- (void)setFetchCenterPixel:(bool)fetchCenterPixel {
+    _fetchCenterPixel = fetchCenterPixel;
+}
+
+- (bool)getFetchCenterPixel {
+    return _fetchCenterPixel;
 }
 
 @end
@@ -1534,6 +1544,7 @@ static const float PerfOutputDelay = 15.0;
 
     SnapshotTarget *target = [[SnapshotTarget alloc] init];
     target.renderTargetID = renderTarget.renderTargetID;
+    target.fetchCenterPixel = renderTarget.fetchCenterPixel;
     renderControl->sceneRenderer.snapshotDelegate = target;
     
     [renderControl->sceneRenderer forceDrawNextFrame];

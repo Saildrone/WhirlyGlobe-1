@@ -29,6 +29,7 @@ using namespace WhirlyKit;
     self = [super init];
     _renderTargetID = Identifiable::genId();
     _clearEveryFrame = true;
+    _fetchCenterPixel = false;
     _blend = false;
     _clearColor = nil;
     

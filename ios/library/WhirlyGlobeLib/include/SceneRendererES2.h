@@ -63,6 +63,10 @@
 - (void)snapshotImage:(UIImage *)image;
 /// Called with the raw image data
 - (void)snapshotData:(NSData *)data;
+/// Set to pull single pixel instead of all out of target
+- (void)setFetchCenterPixel:(bool)fetchCenterPixel;
+/// Set to pull single pixel instead of all out of target
+- (bool)getFetchCenterPixel;
 @end
 
 /** Scene Renderer for OpenGL ES2.

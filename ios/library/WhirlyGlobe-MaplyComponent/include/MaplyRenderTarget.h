@@ -66,4 +66,13 @@
   */
 @property (nonatomic) bool blend;
 
+/**
+ If set, when creating a snapshot with this target, will only pull a single pixel value from the center of the target.
+ 
+ If not set, will create a snapshot with the entire dataset from the target
+ 
+ Set to false by default.
+ */
+@property (nonatomic) bool fetchCenterPixel;
+
 @end

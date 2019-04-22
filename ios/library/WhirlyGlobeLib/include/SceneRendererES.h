@@ -103,6 +103,8 @@ public:
     
     /// Copy the data out of the destination texture and return it
     NSData *snapshot();
+    /// Copy a single pixel from the center of the data out of the destination texture and return it
+    NSData *snapshot_center_pixel();
     
     /// OpenGL ES Name for the frame buffer
     GLuint framebuffer;

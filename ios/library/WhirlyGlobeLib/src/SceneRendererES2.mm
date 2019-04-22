@@ -987,9 +987,16 @@ static const float ScreenOverlap = 0.1;
             // Was a specific render target, not the general screen
             for (auto target: renderTargets) {
                 if (target.getId() == _snapshotDelegate.renderTargetID) {
-                    NSData *data = target.snapshot();
                     
-                    [_snapshotDelegate snapshotData:data];
+                    if (_snapshotDelegate.getFetchCenterPixel) {
+                        NSData *data = target.snapshot_center_pixel();
+                        [_snapshotDelegate snapshotData:data];
+                    }
+                    else {
+                        NSData *data = target.snapshot();
+                        [_snapshotDelegate snapshotData:data];
+                    }
+                    
                     break;
                 }
             }
