@@ -30,6 +30,8 @@ using namespace WhirlyKit;
     _renderTargetID = Identifiable::genId();
     _clearEveryFrame = true;
     _fetchCenterPixel = false;
+    _centerPixelWidthOffset = 0.5;
+    _centerPixelHeightOffset = 0.5;
     _blend = false;
     _clearColor = nil;
     

@@ -150,17 +150,31 @@ NSData *RenderTarget::snapshot()
     return data;
 }
     
-NSData *RenderTarget::snapshot_center_pixel()
+NSData *RenderTarget::snapshot_center_pixel(float widthOffset, float heightOffset)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     CheckGLError("SceneRendererES2: glBindFramebuffer");
     glViewport(0, 0, width, height);
     CheckGLError("SceneRendererES2: glViewport");
+    
+    // some sanity checks on the data
+    if (widthOffset > 1.0) {
+        widthOffset = 1.0;
+    }
+    else if (widthOffset < 0.0) {
+        widthOffset = 0.0;
+    }
+    if (heightOffset > 1.0) {
+        heightOffset = 1.0;
+    }
+    else if (heightOffset < 0.0) {
+        heightOffset = 0.0;
+    }
         
     // Note: We're just assuming this format from the texture.  Should check
     int len = sizeof(GLubyte) * 4;
     GLubyte* pixel = (GLubyte*) malloc(len);
-    glReadPixels(width/2, height/2, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
+    glReadPixels(width * widthOffset, height * heightOffset, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixel);
     
     NSData *data = [[NSData alloc] initWithBytesNoCopy:pixel length:len];
         

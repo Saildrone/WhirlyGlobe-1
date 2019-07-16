@@ -989,7 +989,7 @@ static const float ScreenOverlap = 0.1;
                 if (target.getId() == _snapshotDelegate.renderTargetID) {
                     
                     if (_snapshotDelegate.getFetchCenterPixel) {
-                        NSData *data = target.snapshot_center_pixel();
+                        NSData *data = target.snapshot_center_pixel(_snapshotDelegate.getCenterPixelWidthOffset, _snapshotDelegate.getCenterPixelHeightOffset);
                         [_snapshotDelegate snapshotData:data];
                     }
                     else {

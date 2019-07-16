@@ -41,6 +41,8 @@ using namespace WhirlyKit;
 @property (nonatomic) NSData *data;
 @property (nonatomic) SimpleIdentity renderTargetID;
 @property (nonatomic) bool fetchCenterPixel;
+@property (nonatomic) float centerPixelWidthOffset;
+@property (nonatomic) float centerPixelHeightOffset;
 @end
 
 @implementation SnapshotTarget
@@ -53,6 +55,9 @@ using namespace WhirlyKit;
     _data = nil;
     _renderTargetID = EmptyIdentity;
     _fetchCenterPixel = false;
+    
+    _centerPixelWidthOffset = 0.5;
+    _centerPixelHeightOffset = 0.5;
     
     return self;
 }
@@ -71,6 +76,22 @@ using namespace WhirlyKit;
 
 - (bool)getFetchCenterPixel {
     return _fetchCenterPixel;
+}
+
+- (void)setCenterPixelWidthOffset:(float)centerPixelWidthOffset {
+    _centerPixelWidthOffset = centerPixelWidthOffset;
+}
+
+- (float)getCenterPixelWidthOffset {
+    return _centerPixelWidthOffset;
+}
+
+- (void)setCenterPixelHeightOffset:(float)centerPixelHeightOffset {
+    _centerPixelHeightOffset = centerPixelHeightOffset;
+}
+
+- (float)getCenterPixelHeightOffset {
+    return _centerPixelHeightOffset;
 }
 
 @end
@@ -1545,6 +1566,8 @@ static const float PerfOutputDelay = 15.0;
     SnapshotTarget *target = [[SnapshotTarget alloc] init];
     target.renderTargetID = renderTarget.renderTargetID;
     target.fetchCenterPixel = renderTarget.fetchCenterPixel;
+    target.centerPixelWidthOffset = renderTarget.centerPixelWidthOffset;
+    target.centerPixelHeightOffset = renderTarget.centerPixelHeightOffset;
     renderControl->sceneRenderer.snapshotDelegate = target;
     
     [renderControl->sceneRenderer forceDrawNextFrame];

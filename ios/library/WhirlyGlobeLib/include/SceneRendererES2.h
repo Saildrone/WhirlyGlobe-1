@@ -67,6 +67,11 @@
 - (void)setFetchCenterPixel:(bool)fetchCenterPixel;
 /// Set to pull single pixel instead of all out of target
 - (bool)getFetchCenterPixel;
+/// Set to change where single pixel is pulled from in target
+- (void)setCenterPixelWidthOffset:(float)centerPixelWidthOffset;
+- (float)getCenterPixelWidthOffset;
+- (void)setCenterPixelHeightOffset:(float)centerPixelheightOffset;
+- (float)getCenterPixelHeightOffset;
 @end
 
 /** Scene Renderer for OpenGL ES2.

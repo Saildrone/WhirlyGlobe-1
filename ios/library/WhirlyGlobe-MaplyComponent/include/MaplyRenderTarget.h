@@ -75,4 +75,10 @@
  */
 @property (nonatomic) bool fetchCenterPixel;
 
+/**
+ Set to move where the center pixel value gets pulled from
+ */
+@property (nonatomic) float centerPixelWidthOffset;
+@property (nonatomic) float centerPixelHeightOffset;
+
 @end
