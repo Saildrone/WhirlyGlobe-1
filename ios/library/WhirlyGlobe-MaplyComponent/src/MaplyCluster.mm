@@ -85,6 +85,7 @@
         CGContextBeginPath(ctx);
         [color setFill];
         [[UIColor whiteColor] setStroke];
+        CGContextSetLineWidth(ctx, 4.0);
         CGContextAddEllipseInRect(ctx, CGRectMake(1, 1, scaleSize.width-2, scaleSize.height-2));
         CGContextDrawPath(ctx, kCGPathFillStroke);
         
@@ -92,7 +93,7 @@
         [[UIColor whiteColor] setStroke];
         NSString *numStr = [NSString stringWithFormat:@"%d",clusterInfo.numObjects];
         CGSize textSize = [numStr sizeWithAttributes:@{NSFontAttributeName: font}];
-        [numStr drawAtPoint:CGPointMake((scaleSize.width-textSize.width)/2.0,(scaleSize.height-textSize.height)/2.0) withAttributes:@{NSFontAttributeName:font}];
+        [numStr drawAtPoint:CGPointMake((scaleSize.width-textSize.width)/2.0,(scaleSize.height-textSize.height)/2.0) withAttributes:@{NSFontAttributeName:font, NSForegroundColorAttributeName: UIColor.whiteColor}];
     
         image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
